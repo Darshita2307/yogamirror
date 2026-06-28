@@ -14,9 +14,13 @@ from groq import Groq
 load_dotenv()
 
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
-mp_pose = mp.solutions.pose
-mp_draw = mp.solutions.drawing_utils
+# mp_pose = mp.solutions.pose
+# mp_draw = mp.solutions.drawing_utils
+from mediapipe.python.solutions import pose as mp_pose_module
+from mediapipe.python.solutions import drawing_utils as mp_draw_module
 
+mp_pose = mp_pose_module
+mp_draw = mp_draw_module
 # ── Database ────────────────────────────────────
 def init_db():
     conn = sqlite3.connect("yogamirror.db")
@@ -698,7 +702,8 @@ with tab2:
 
         cap.release()
 
-# ── TAB 3: PROGRESS ─────────────────────────────
+# ── TAB 3: PROGRESS ─────────────────────────────mp_pose = mp.solutions.pose
+mp_draw = mp.solutions.drawing_utils
 # with tab3:
 #     st.subheader("Tumhari Progress 📈")
 
