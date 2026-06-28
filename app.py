@@ -16,7 +16,9 @@ load_dotenv()
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 # mp_pose = mp.solutions.pose
 # mp_draw = mp.solutions.drawing_utils
-IS_CLOUD = os.environ.get("HOME") == "/home/adminuser"
+IS_CLOUD = os.environ.get("STREAMLIT_SHARING_MODE") is not None or \
+           os.environ.get("HOME") == "/home/adminuser" or \
+           not os.path.exists("C:/")
 
 if not IS_CLOUD:
     import mediapipe as mp
