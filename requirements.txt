@@ -1,7 +1,8 @@
 streamlit
 opencv-python-headless
-mediapipe==0.10.33
+mediapipe==0.10.21
+numpy
+matplotlib
 groq
 python-dotenv
-matplotlib
-numpy
+pandas
