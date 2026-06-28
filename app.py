@@ -1,6 +1,6 @@
 import streamlit as st
 import cv2
-import mediapipe as mp
+# import mediapipe as mp
 import numpy as np
 import sqlite3
 from datetime import date
@@ -20,9 +20,12 @@ import os
 IS_CLOUD = os.environ.get("HOME") == "/home/adminuser"
 
 if not IS_CLOUD:
-    import mediapipe as mp
-    mp_pose = mp.solutions.pose
-    mp_draw = mp.solutions.drawing_utils
+    IS_CLOUD = os.environ.get("HOME") == "/home/adminuser"
+
+    if not IS_CLOUD:
+        import mediapipe as mp
+        mp_pose = mp.solutions.pose
+        mp_draw = mp.solutions.drawing_utils
 # ── Database ────────────────────────────────────
 def init_db():
     conn = sqlite3.connect("yogamirror.db")
