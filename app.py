@@ -16,16 +16,12 @@ load_dotenv()
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 # mp_pose = mp.solutions.pose
 # mp_draw = mp.solutions.drawing_utils
-import os
 IS_CLOUD = os.environ.get("HOME") == "/home/adminuser"
 
 if not IS_CLOUD:
-    IS_CLOUD = os.environ.get("HOME") == "/home/adminuser"
-
-    if not IS_CLOUD:
-        import mediapipe as mp
-        mp_pose = mp.solutions.pose
-        mp_draw = mp.solutions.drawing_utils
+    import mediapipe as mp
+    mp_pose = mp.solutions.pose
+    mp_draw = mp.solutions.drawing_utils
 # ── Database ────────────────────────────────────
 def init_db():
     conn = sqlite3.connect("yogamirror.db")
