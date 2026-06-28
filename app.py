@@ -1,29 +1,32 @@
+import cv2
 import streamlit as st
-
-# import mediapipe as mp
 import numpy as np
 import sqlite3
 from datetime import date
 import matplotlib.pyplot as plt
-
-# ── Setup ──────────────────────────────────────
-
 import os
+
 from dotenv import load_dotenv
 from groq import Groq
+
 load_dotenv()
 
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
-# mp_pose = mp.solutions.pose
-# mp_draw = mp.solutions.drawing_utils
-IS_CLOUD = os.environ.get("HOME") == "/home/adminuser"
 
-if not IS_CLOUD:
+# ---------- Webcam / MediaPipe ----------
+WEBCAM_AVAILABLE = False
+
+try:
     import cv2
     import mediapipe as mp
+
     mp_pose = mp.solutions.pose
     mp_draw = mp.solutions.drawing_utils
-# ── Database ────────────────────────────────────
+
+    WEBCAM_AVAILABLE = True
+
+except Exception:
+    WEBCAM_AVAILABLE = False
 def init_db():
     conn = sqlite3.connect("yogamirror.db")
     c = conn.cursor()
@@ -564,7 +567,7 @@ with tab1:
 #         save_session(pose_choice, seconds, 85.0)
 #         st.success(f"Session save! {seconds} seconds hold kiya.")
 with tab2:
-    if IS_CLOUD:
+    if not WEBCAM_AVAILABLE:
         st.subheader("📷 Live Pose Practice")
         st.info("""
         🖥️ **Local Mode Required**
