@@ -1,6 +1,6 @@
 streamlit
-opencv-python-headless
 groq
 python-dotenv
 matplotlib
 numpy
+pandas

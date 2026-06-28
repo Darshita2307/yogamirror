@@ -1,5 +1,5 @@
 import streamlit as st
-import cv2
+
 # import mediapipe as mp
 import numpy as np
 import sqlite3
@@ -19,6 +19,7 @@ client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 IS_CLOUD = os.environ.get("HOME") == "/home/adminuser"
 
 if not IS_CLOUD:
+    import cv2
     import mediapipe as mp
     mp_pose = mp.solutions.pose
     mp_draw = mp.solutions.drawing_utils
