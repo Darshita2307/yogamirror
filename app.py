@@ -16,8 +16,13 @@ load_dotenv()
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 # mp_pose = mp.solutions.pose
 # mp_draw = mp.solutions.drawing_utils
-mp_pose = mp.solutions.pose
-mp_draw = mp.solutions.drawing_utils
+import os
+IS_CLOUD = os.environ.get("HOME") == "/home/adminuser"
+
+if not IS_CLOUD:
+    import mediapipe as mp
+    mp_pose = mp.solutions.pose
+    mp_draw = mp.solutions.drawing_utils
 # ── Database ────────────────────────────────────
 def init_db():
     conn = sqlite3.connect("yogamirror.db")
@@ -558,149 +563,170 @@ with tab1:
 #         seconds = hold_time // 30
 #         save_session(pose_choice, seconds, 85.0)
 #         st.success(f"Session save! {seconds} seconds hold kiya.")
-
 with tab2:
-    pose_options = sorted([
-        "Adho Mukha Svanasana",
-        "Ananda Balasana",
-        "Ardha Chandrasana",
-        "Ardha Matsyendrasana",
-        "Ashwa Sanchalanasana",
-        "Baddha Konasana",
-        "Bakasana",
-        "Balasana",
-        "Bhujangasana",
-        "Bitilasana",
-        "Chakrasana",
-        "Chaturanga Dandasana",
-        "Dandasana",
-        "Dhanurasana",
-        "Garudasana",
-        "Gomukhasana",
-        "Halasana",
-        "Hanumanasana",
-        "Janu Sirsasana",
-        "Kapotasana",
-        "Kurmasana",
-        "Malasana",
-        "Marjaryasana",
-        "Matsyasana",
-        "Mayurasana",
-        "Natarajasana",
-        "Naukasana",
-        "Padahastasana",
-        "Padmasana",
-        "Parighasana",
-        "Parivrtta Trikonasana",
-        "Parsvakonasana",
-        "Parsvottanasana",
-        "Paschimottanasana",
-        "Pavanamuktasana",
-        "Pincha Mayurasana",
-        "Plank Pose",
-        "Purvottanasana",
-        "Salabhasana",
-        "Sarvangasana",
-        "Shavasana",
-        "Setu Bandhasana",
-        "Simhasana",
-        "Sukhasana",
-        "Surya Namaskar",
-        "Tadasana",
-        "Trikonasana",
-        "Urdhva Dhanurasana",
-        "Ustrasana",
-        "Utkatasana",
-        "Uttanasana",
-        "Uttitha Parsvakonasana",
-        "Utthita Trikonasana",
-        "Vajrasana",
-        "Vasisthasana",
-        "Veerabhadrasana I",
-        "Veerabhadrasana II",
-        "Veerabhadrasana III",
-        "Viparita Karani",
-        "Virasana",
-        "Vrikshasana",
-        "Other"
-    ])
-    pose_choice = st.selectbox(
-        "🧘 Select Asana",
-        pose_options
-    )
-
-    selected_pose = pose_choice
-
-    if pose_choice == "Other":
-        custom_pose = st.text_input(
-            "Enter Asana Name",
-            placeholder="Example: Yoga Mudrasana"
+    if IS_CLOUD:
+        st.subheader("📷 Live Pose Practice")
+        st.info("""
+        🖥️ **Local Mode Required**
+        
+        Webcam feature sirf local machine pe kaam karta hai.
+        
+        **Local pe run karne ke liye:**
+                git clone https://github.com/TUMHARA_USERNAME/yogamirror
+                cd yogamirror
+                pip install -r requirements.txt
+                streamlit run app.py
+                """)
+        st.markdown("**Features jo locally kaam karte hain:**")
+        st.markdown("""
+        - 📸 Real-time body landmark detection (33 points)
+        - 📐 Joint angle calculation
+        - 🤖 AI correction in Hindi
+        - 💾 Session progress saving
+        """)
+    else:
+        pose_options = sorted([
+            "Adho Mukha Svanasana",
+            "Ananda Balasana",
+            "Ardha Chandrasana",
+            "Ardha Matsyendrasana",
+            "Ashwa Sanchalanasana",
+            "Baddha Konasana",
+            "Bakasana",
+            "Balasana",
+            "Bhujangasana",
+            "Bitilasana",
+            "Chakrasana",
+            "Chaturanga Dandasana",
+            "Dandasana",
+            "Dhanurasana",
+            "Garudasana",
+            "Gomukhasana",
+            "Halasana",
+            "Hanumanasana",
+            "Janu Sirsasana",
+            "Kapotasana",
+            "Kurmasana",
+            "Malasana",
+            "Marjaryasana",
+            "Matsyasana",
+            "Mayurasana",
+            "Natarajasana",
+            "Naukasana",
+            "Padahastasana",
+            "Padmasana",
+            "Parighasana",
+            "Parivrtta Trikonasana",
+            "Parsvakonasana",
+            "Parsvottanasana",
+            "Paschimottanasana",
+            "Pavanamuktasana",
+            "Pincha Mayurasana",
+            "Plank Pose",
+            "Purvottanasana",
+            "Salabhasana",
+            "Sarvangasana",
+            "Shavasana",
+            "Setu Bandhasana",
+            "Simhasana",
+            "Sukhasana",
+            "Surya Namaskar",
+            "Tadasana",
+            "Trikonasana",
+            "Urdhva Dhanurasana",
+            "Ustrasana",
+            "Utkatasana",
+            "Uttanasana",
+            "Uttitha Parsvakonasana",
+            "Utthita Trikonasana",
+            "Vajrasana",
+            "Vasisthasana",
+            "Veerabhadrasana I",
+            "Veerabhadrasana II",
+            "Veerabhadrasana III",
+            "Viparita Karani",
+            "Virasana",
+            "Vrikshasana",
+            "Other"
+        ])
+        pose_choice = st.selectbox(
+            "🧘 Select Asana",
+            pose_options
         )
 
-        if custom_pose.strip():
-            selected_pose = custom_pose.strip()
-        
+        selected_pose = pose_choice
 
-    col1, col2 = st.columns(2)
-    with col1:
-        start = st.button("▶️ Practice Shuru Karo")
-    with col2:
-        stop = st.button("⏹️ Band Karo")
+        if pose_choice == "Other":
+            custom_pose = st.text_input(
+                "Enter Asana Name",
+                placeholder="Example: Yoga Mudrasana"
+            )
 
-    if start:
-        st.session_state["running"] = True
-        st.session_state["hold_time"] = 0
-        st.session_state["frame_count"] = 0
-        st.session_state["feedback"] = "Pose karo..."
+            if custom_pose.strip():
+                selected_pose = custom_pose.strip()
+            
 
-    if stop and st.session_state.get("running"):
-        seconds = st.session_state.get("hold_time", 0) // 30
-        save_session(selected_pose, seconds, 85.0)
-        st.session_state["running"] = False
-        st.success(f"✅ Session save! {seconds} seconds hold kiya.")
+        col1, col2 = st.columns(2)
+        with col1:
+            start = st.button("▶️ Practice Shuru Karo")
+        with col2:
+            stop = st.button("⏹️ Band Karo")
 
-    if st.session_state.get("running"):
-        stframe = st.empty()
-        feedback_box = st.empty()
+        if start:
+            st.session_state["running"] = True
+            st.session_state["hold_time"] = 0
+            st.session_state["frame_count"] = 0
+            st.session_state["feedback"] = "Pose karo..."
 
-        cap = cv2.VideoCapture(0)
+        if stop and st.session_state.get("running"):
+            seconds = st.session_state.get("hold_time", 0) // 30
+            save_session(selected_pose, seconds, 85.0)
+            st.session_state["running"] = False
+            st.success(f"✅ Session save! {seconds} seconds hold kiya.")
 
-        with mp_pose.Pose() as pose:
-            while cap.isOpened():
-                ret, frame = cap.read()
-                if not ret:
-                    break
+        if st.session_state.get("running"):
+            stframe = st.empty()
+            feedback_box = st.empty()
 
-                rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                results = pose.process(rgb)
+            cap = cv2.VideoCapture(0)
 
-                if results.pose_landmarks:
-                    mp_draw.draw_landmarks(
-                        frame, results.pose_landmarks,
-                        mp_pose.POSE_CONNECTIONS)
+            with mp_pose.Pose() as pose:
+                while cap.isOpened():
+                    ret, frame = cap.read()
+                    if not ret:
+                        break
 
-                    st.session_state["hold_time"] += 1
-                    st.session_state["frame_count"] += 1
+                    rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                    results = pose.process(rgb)
 
-                    if st.session_state["frame_count"] % 60 == 0:
-                        st.session_state["feedback"] = get_ai_feedback(
-                            selected_pose, results.pose_landmarks, concern)
+                    if results.pose_landmarks:
+                        mp_draw.draw_landmarks(
+                            frame, results.pose_landmarks,
+                            mp_pose.POSE_CONNECTIONS)
 
-                    cv2.putText(frame,
-                               f"AI: {st.session_state['feedback']}",
-                               (20, 50),
-                               cv2.FONT_HERSHEY_SIMPLEX,
-                               0.7, (0, 255, 0), 2)
-                    
-                    stframe.image(frame, channels="BGR",
-                                use_container_width=True)
-                    feedback_box.info(
-                        f"💬 {st.session_state.get('feedback', 'Pose karo...')}")
+                        st.session_state["hold_time"] += 1
+                        st.session_state["frame_count"] += 1
 
-        cap.release()
+                        if st.session_state["frame_count"] % 60 == 0:
+                            st.session_state["feedback"] = get_ai_feedback(
+                                selected_pose, results.pose_landmarks, concern)
+
+                        cv2.putText(frame,
+                                f"AI: {st.session_state['feedback']}",
+                                (20, 50),
+                                cv2.FONT_HERSHEY_SIMPLEX,
+                                0.7, (0, 255, 0), 2)
+                        
+                        stframe.image(frame, channels="BGR",
+                                    use_container_width=True)
+                        feedback_box.info(
+                            f"💬 {st.session_state.get('feedback', 'Pose karo...')}")
+
+            cap.release()
 
 # ── TAB 3: PROGRESS ─────────────────────────────
-
+# mp_pose = mp.solutions.pose
+# mp_draw = mp.solutions.drawing_utils
 # with tab3:
 #     st.subheader("Tumhari Progress 📈")
 
