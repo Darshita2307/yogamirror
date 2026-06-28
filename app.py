@@ -1,5 +1,5 @@
 import streamlit as st
-import cv2
+# import cv2
 # import mediapipe as mp
 import numpy as np
 import sqlite3
@@ -21,6 +21,7 @@ IS_CLOUD = os.environ.get("STREAMLIT_SHARING_MODE") is not None or \
            not os.path.exists("C:/")
 
 if not IS_CLOUD:
+    import cv2
     import mediapipe as mp
     mp_pose = mp.solutions.pose
     mp_draw = mp.solutions.drawing_utils
